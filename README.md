@@ -39,7 +39,19 @@ cat secret.dec.txt
 ```
 **Que se passe-t-il si on modifie un octet du fichier chiffré ?**  
  
-**Pourquoi ne faut-il pas commiter la clé dans Git ?**   
+**Pourquoi ne faut-il pas commiter la clé dans Git ?**
+Reponses 1&2
+Quel est le rôle de la clé Fernet ?
+
+C'est une clé symétrique. Elle sert à la fois à chiffrer (transformer le texte en code illisible) et à déchiffrer (retrouver le texte original). Elle assure aussi l'authenticité : si le fichier est modifié, la clé ne pourra pas le déchiffrer.
+
+Que se passe-t-il si on modifie un octet du fichier chiffré ?
+
+Le déchiffrement va échouer et Python affichera une erreur cryptography.fernet.InvalidToken. C'est une sécurité : Fernet détecte immédiatement que le fichier a été altéré ou corrompu.
+
+Pourquoi ne faut-il pas commiter la clé dans Git ?
+
+Parce que Git garde un historique. Si tu envoies ta clé sur GitHub, toute personne ayant accès au dépôt (même dans le futur) pourra déchiffrer tes données. Une clé doit rester secrète et stockée à l'extérieur du code (dans des variables d'environnement ou des "Secrets").   
 
 ## 5) Atelier 1 :
 Dans cet atelier, la clé Fernet n'est plus générée dans le code mais stockée dans un Repository Secret Github. Ecrivez un nouveau programme **python app/fernet_atelier1.py** qui utilisera une clé Fernet caché dans un Secret GitHub pour encoder et décoder vos fichiers.
